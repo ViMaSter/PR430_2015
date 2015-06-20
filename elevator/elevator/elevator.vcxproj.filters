@@ -33,6 +33,12 @@
     <ClInclude Include="Passenger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ElevatableEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FloorRequest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -48,6 +54,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Passenger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ElevatableEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FloorRequest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

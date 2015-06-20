@@ -1,43 +1,44 @@
 #pragma once
 
+#include "ElevatableEntity.h"
+
 #include "windows.h"
 
-struct ElevatorParameter
+struct ElevatorParameter : public ElevatableEntityParameter
 {
 private:
-	ElevatorParameter& operator=(ElevatorParameter& rhs)
+	ElevatorParameter() : ElevatableEntityParameter()
 	{
 	}
-
 public:
-	const int StartFloor;
-	ElevatorParameter() : StartFloor(0)
-	{
-	}
-	ElevatorParameter(int startFloor) : StartFloor(startFloor)
+	ElevatorParameter(int startFloor, HANDLE* floorEvents, std::mutex* openRequestsMutex, std::queue<FloorRequest>* openRequests, std::list<Elevator*>* elevatorList, std::list<Passenger*>* passengerList)
+		: ElevatableEntityParameter(startFloor, floorEvents, openRequestsMutex, openRequests, elevatorList, passengerList)
 	{
 	}
 
-	ElevatorParameter(const ElevatorParameter& rhs) : StartFloor(rhs.StartFloor)
+	ElevatorParameter(const ElevatableEntityParameter& rhs)
+		: ElevatableEntityParameter(rhs)
 	{
-
 	}
 };
 
-class Elevator
+class Passenger;
+class Elevator : public ElevatableEntity
 {
-private:
-	Elevator();
-	int Floor;
-
 public:
-	Elevator(const ElevatorParameter& rhs);
-	~Elevator();
-
-	ElevatorParameter Parameter;
-	DWORD AssociatedThreadID;
-
-	const int GetFloor() const;
-	int SetFloor(int floor);
+	// static
 	static DWORD WINAPI ThreadWork(LPVOID parameter);
+
+	FloorRequest currentRequest;
+	std::list<Passenger*> PassengerList;
+
+	// ctor
+	Elevator();
+	Elevator(const ElevatorParameter& rhs);
+	// dtor
+	virtual ~Elevator();
+
+	virtual int SetFloor(const int floor, bool absolute = false);
+
+	void TakeNextRequest();
 };
