@@ -16,7 +16,7 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	// Initialize queue and map
 	const int ElevatorCount = 1;
-	const int PassengerCount = 1;
+	const int PassengerCount = 2;
 	const int FloorCount = 10;
 	HANDLE FloorEvents[FloorCount];
 
@@ -32,7 +32,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	std::list<Passenger*> PassengerList = std::list<Passenger*>();
 
 	// Initialize entities
-	ElevatorParameter SampleElevatorParameter = ElevatorParameter(0, FloorEvents, &OpenRequestsMutex, &OpenRequests, &ElevatorList, &PassengerList);
+	ElevatorParameter SampleElevatorParameter = ElevatorParameter(2, FloorEvents, &OpenRequestsMutex, &OpenRequests, &ElevatorList, &PassengerList);
 	PassengerParameter SamplePassengerParameter = PassengerParameter(0, FloorEvents, &OpenRequestsMutex, &OpenRequests, &ElevatorList, &PassengerList);
 
 	for (int i = 0; i < ElevatorCount; i++)

@@ -29,7 +29,9 @@ public:
 	// static
 	static DWORD WINAPI ThreadWork(LPVOID parameter);
 
-	FloorRequest currentRequest;
+	FloorRequest CurrentRequest;
+	bool CurrentlyMoving;
+	std::mutex PassengerListMutex;
 	std::list<Passenger*> PassengerList;
 
 	// ctor

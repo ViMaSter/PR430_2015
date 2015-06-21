@@ -15,7 +15,7 @@ DWORD WINAPI Elevator::ThreadWork(LPVOID parameter)
 
 	while (true/* insert any optional condition to stop the elevator */)
 	{
-		if (elevatorPtr->currentRequest == FloorRequest::NoRequest)
+		if (elevatorPtr->CurrentRequest == FloorRequest::NoRequest)
 		{
 			// @Notice:	Improve by calling when a new request is added and do "nothing" while "nothing" is
 			//			happening instead of checking every time and locking the request all the time
@@ -29,39 +29,42 @@ DWORD WINAPI Elevator::ThreadWork(LPVOID parameter)
 		{
 			while (elevatorPtr->PassengerList.empty())
 			{
-				if (elevatorPtr->Floor == elevatorPtr->currentRequest.StartFloor)
+				elevatorPtr->CurrentlyMoving = true;
+				if (elevatorPtr->Floor == elevatorPtr->CurrentRequest.StartFloor)
 				{
+					elevatorPtr->CurrentlyMoving = false;
 					elevatorPtr->SetFloor(elevatorPtr->Floor, true);
+					while (elevatorPtr->PassengerList.empty()) {
+						Sleep(5);
+					}
 				}
 
-				while (elevatorPtr->Floor != elevatorPtr->currentRequest.StartFloor)
+				while (elevatorPtr->Floor != elevatorPtr->CurrentRequest.StartFloor)
 				{
 					elevatorPtr->SetFloor(
-						elevatorPtr->Floor > elevatorPtr->currentRequest.StartFloor ?
+						elevatorPtr->Floor > elevatorPtr->CurrentRequest.StartFloor ?
 						-1 :
 						1
 					);
+					if (elevatorPtr->Floor == elevatorPtr->CurrentRequest.StartFloor) {
+						elevatorPtr->CurrentlyMoving = false;
+					}
 					Sleep(500);
 				}
 			}
-			while (elevatorPtr->Floor != elevatorPtr->currentRequest.TargetFloor)
+			elevatorPtr->CurrentlyMoving = true;
+			while (elevatorPtr->Floor != elevatorPtr->CurrentRequest.TargetFloor)
 			{
 				elevatorPtr->SetFloor(
-					elevatorPtr->Floor > elevatorPtr->currentRequest.TargetFloor ?
+					elevatorPtr->Floor > elevatorPtr->CurrentRequest.TargetFloor ?
 					-1 :
 					1
 				);
-				for (int i = 0; i < elevatorPtr->PassengerList.size(); i++)
-				{
-					for (std::list<Passenger*>::iterator it = (elevatorPtr->PassengerList).begin(); it != (elevatorPtr->PassengerList).end(); ++it)
-					{
-						((Passenger*)*it)->SetFloor(elevatorPtr->Floor);
-					}
-				}
+				elevatorPtr->CurrentlyMoving = false;
 				Sleep(500);
 			}
 
-			elevatorPtr->currentRequest = FloorRequest::NoRequest;
+			elevatorPtr->CurrentRequest = FloorRequest::NoRequest;
 		}
 		// Do elevator stuff
 	}
@@ -71,11 +74,15 @@ DWORD WINAPI Elevator::ThreadWork(LPVOID parameter)
 	return 0;
 }
 
-Elevator::Elevator() : ElevatableEntity()
+Elevator::Elevator()
+	: ElevatableEntity()
+	, CurrentlyMoving(false)
 {
 }
 
-Elevator::Elevator(const ElevatorParameter& rhs) : ElevatableEntity(rhs)
+Elevator::Elevator(const ElevatorParameter& rhs)
+	: ElevatableEntity(rhs)
+	, CurrentlyMoving(false)
 {
 	PassengerList = std::list<Passenger*>();
 	CreateThread(0, 2048, Elevator::ThreadWork, (LPVOID)&Parameter, 0, &AssociatedThreadID);
@@ -86,10 +93,23 @@ Elevator::~Elevator()
 
 }
 
-int Elevator::SetFloor(const int floor, bool absolute)
+int Elevator::SetFloor(const int floor, const bool absolute)
 {
 	// Locally set new position
 	Floor = absolute ? floor : Floor + floor;
+
+	// Set floor for all passengers
+
+	bool success = false;
+	do {
+		success = PassengerListMutex.try_lock();
+	} while (!success);
+
+	for (std::list<Passenger*>::iterator it = PassengerList.begin(); it != PassengerList.end(); ++it) {
+		((Passenger*)*it)->SetFloor(Floor);
+	}
+
+	PassengerListMutex.unlock();
 
 	// Announce the new floor this elevator is at
 	if (!SetEvent(Parameter.FloorEvents[Floor]))
@@ -108,9 +128,9 @@ void Elevator::TakeNextRequest()
 {
 	if (!Parameter.OpenRequests->empty())
 	{
-		currentRequest = Parameter.OpenRequests->front();
+		CurrentRequest = Parameter.OpenRequests->front();
 		Parameter.OpenRequests->pop();
-		currentRequest.AssociatedElevator = this;
-		printf("[Elevator  %05d]  Now driving to %i\r\n", GetCurrentThreadId(), currentRequest.TargetFloor);
+		CurrentRequest.AssociatedElevator = this;
+		printf("[Elevator  %05d]  Now driving to %i\r\n", GetCurrentThreadId(), CurrentRequest.TargetFloor);
 	}
 }

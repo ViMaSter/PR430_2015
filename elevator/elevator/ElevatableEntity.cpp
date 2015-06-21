@@ -20,7 +20,7 @@ ElevatableEntity::~ElevatableEntity()
 int ElevatableEntity::SetFloor(const int floor)
 {
 	Floor = floor;
-	return 0;
+	return Floor;
 }
 
 const int ElevatableEntity::GetFloor() const

@@ -12,6 +12,8 @@ DWORD WINAPI Passenger::ThreadWork(LPVOID parameter)
 
 	DWORD ElevatorIsAvailableEventResponse;
 
+	bool InitialLoop = true;
+
 	while (true)
 	{
 		// Waiting for elevator
@@ -21,7 +23,13 @@ DWORD WINAPI Passenger::ThreadWork(LPVOID parameter)
 			if (passenger->TargetFloor == passenger->Floor)
 			{
 				// Drink coffee for a bit...
-				Sleep(2500);
+				//if (!InitialLoop) {
+					Sleep(2500);
+				//}
+				//else {
+					//InitialLoop = false;
+				//}
+
 				int randomRequest = passenger->Floor;
 				do
 				{
@@ -31,18 +39,31 @@ DWORD WINAPI Passenger::ThreadWork(LPVOID parameter)
 				passenger->SendRequest(randomRequest);
 				ElevatorIsAvailableEventResponse = WaitForSingleObject(passengerParameter->FloorEvents[passenger->Floor], INFINITE);
 			}
-
+			int success;
 			switch (ElevatorIsAvailableEventResponse)
 			{
 				case WAIT_OBJECT_0:
-					ResetEvent(passengerParameter->FloorEvents[passenger->Floor]);
+					success = ResetEvent(passengerParameter->FloorEvents[passenger->Floor]);
 
+					printf("[Passenger %05d]  Reacting to floor event\r\n\r\n", GetCurrentThreadId());
 					for (std::list<Elevator*>::iterator it = (passengerParameter->ElevatorList)->begin(); it != passengerParameter->ElevatorList->end(); ++it)
 					{
-						printf("[Passenger %05d]  Enters elevator\r\n\r\n", GetCurrentThreadId());
+						Elevator* currentElevator = ((Elevator*)*it);
+						if (!currentElevator->CurrentlyMoving && (currentElevator->CurrentRequest.TargetFloor == passenger->TargetFloor)) {
+							// Check if the elevator we're currently checking is handling the process of this passenger
+							// and not moving
+							printf("[Passenger %05d]  Enters elevator\r\n\r\n", GetCurrentThreadId());
 
-						((Elevator*)*it)->PassengerList.push_back(passenger);
-						passenger->InElevator = *it;
+							bool success = false;
+							do {
+								success = currentElevator->PassengerListMutex.try_lock();
+							} while (!success);
+							currentElevator->PassengerList.push_back(passenger);
+							currentElevator->PassengerListMutex.unlock();
+
+							passenger->InElevator = *it;
+							break;
+						}
 					}
 					break;
 				default:
@@ -55,7 +76,12 @@ DWORD WINAPI Passenger::ThreadWork(LPVOID parameter)
 			// "Exit" the elevator
 			if (passenger->TargetFloor == passenger->Floor)
 			{
+				bool success = false;
+				do {
+					success = passenger->InElevator->PassengerListMutex.try_lock();
+				} while (!success);
 				passenger->InElevator->PassengerList.remove(passenger);
+				passenger->InElevator->PassengerListMutex.unlock();
 				passenger->InElevator = nullptr;
 				printf("[Passenger %05d]  Exits elevator\r\n\r\n", GetCurrentThreadId());
 			}
@@ -82,11 +108,13 @@ Passenger::~Passenger()
 
 void Passenger::SendRequest(const int floor)
 {
-	if (Parameter.OpenRequestsMutex->try_lock())
-	{
-		printf("[Passenger %05d]  Requesting elevator from %i to %i\r\n", GetCurrentThreadId(), Floor, floor);
-		TargetFloor = floor;
-		Parameter.OpenRequests->push(FloorRequest(Floor, floor));
-		Parameter.OpenRequestsMutex->unlock();
-	}
+	bool success = false;
+	do {
+		success = Parameter.OpenRequestsMutex->try_lock();
+	} while (!success);
+	
+	printf("[Passenger %05d]  Requesting elevator from %i to %i\r\n", GetCurrentThreadId(), Floor, floor);
+	TargetFloor = floor;
+	Parameter.OpenRequests->push(FloorRequest(Floor, floor));
+	Parameter.OpenRequestsMutex->unlock();
 }
