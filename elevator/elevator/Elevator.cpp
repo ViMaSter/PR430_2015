@@ -15,61 +15,67 @@ DWORD WINAPI Elevator::ThreadWork(LPVOID parameter)
 
 	while (true/* insert any optional condition to stop the elevator */)
 	{
+		// Loop until the elevator has a request
 		if (elevatorPtr->CurrentRequest == FloorRequest::NoRequest)
 		{
-			// @Notice:	Improve by calling when a new request is added and do "nothing" while "nothing" is
-			//			happening instead of checking every time and locking the request all the time
+			// @Notice:	Improve by only calling this, when a new
+			//			request is added and sleep until then
 			if (elevatorParameter->OpenRequestsMutex->try_lock())
 			{
-				((Elevator*)(elevatorParameter->Object))->TakeNextRequest();
+				if (((Elevator*)(elevatorParameter->Object))->TakeNextRequest()) {
+					elevatorPtr->SetFloor(elevatorPtr->Floor, true);
+				}
 				elevatorParameter->OpenRequestsMutex->unlock();
 			}
 		}
 		else
 		{
+			// Logic ran when we have a request but not picked up the customer yet
 			while (elevatorPtr->PassengerList.empty())
 			{
+				//	If the elevator has a request and is empty
+				//  and we arrive at the StartFloor of our request...
 				elevatorPtr->CurrentlyMoving = true;
 				if (elevatorPtr->Floor == elevatorPtr->CurrentRequest.StartFloor)
 				{
+					// ...we announce ourselves with CurrentlyMoving = false...
 					elevatorPtr->CurrentlyMoving = false;
 					elevatorPtr->SetFloor(elevatorPtr->Floor, true);
 					while (elevatorPtr->PassengerList.empty()) {
+						// ...and wait until we're no longer empty
 						Sleep(5);
 					}
 				}
 
+				// If we're not at the start floor (and still empty)
 				while (elevatorPtr->Floor != elevatorPtr->CurrentRequest.StartFloor)
 				{
+					// ...we move closer to the start floor
 					elevatorPtr->SetFloor(
 						elevatorPtr->Floor > elevatorPtr->CurrentRequest.StartFloor ?
 						-1 :
 						1
 					);
-					if (elevatorPtr->Floor == elevatorPtr->CurrentRequest.StartFloor) {
-						elevatorPtr->CurrentlyMoving = false;
-					}
 					Sleep(500);
 				}
 			}
-			elevatorPtr->CurrentlyMoving = true;
+
+			// Logic ran when we have a request and picked up the customer
 			while (elevatorPtr->Floor != elevatorPtr->CurrentRequest.TargetFloor)
 			{
+				// We move closer to the target floor
 				elevatorPtr->SetFloor(
 					elevatorPtr->Floor > elevatorPtr->CurrentRequest.TargetFloor ?
 					-1 :
 					1
 				);
-				elevatorPtr->CurrentlyMoving = false;
 				Sleep(500);
 			}
 
+			// And reset the elevator after that
 			elevatorPtr->CurrentRequest = FloorRequest::NoRequest;
 		}
-		// Do elevator stuff
 	}
-
-	Sleep(5);
 
 	return 0;
 }
@@ -124,7 +130,7 @@ int Elevator::SetFloor(const int floor, const bool absolute)
 	return Floor;
 }
 
-void Elevator::TakeNextRequest()
+bool Elevator::TakeNextRequest()
 {
 	if (!Parameter.OpenRequests->empty())
 	{
@@ -132,5 +138,7 @@ void Elevator::TakeNextRequest()
 		Parameter.OpenRequests->pop();
 		CurrentRequest.AssociatedElevator = this;
 		printf("[Elevator  %05d]  Now driving to %i\r\n", GetCurrentThreadId(), CurrentRequest.TargetFloor);
+		return true;
 	}
+	return false;
 }

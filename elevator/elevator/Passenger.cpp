@@ -39,11 +39,10 @@ DWORD WINAPI Passenger::ThreadWork(LPVOID parameter)
 				passenger->SendRequest(randomRequest);
 				ElevatorIsAvailableEventResponse = WaitForSingleObject(passengerParameter->FloorEvents[passenger->Floor], INFINITE);
 			}
-			int success;
 			switch (ElevatorIsAvailableEventResponse)
 			{
 				case WAIT_OBJECT_0:
-					success = ResetEvent(passengerParameter->FloorEvents[passenger->Floor]);
+					ResetEvent(passengerParameter->FloorEvents[passenger->Floor]);
 
 					printf("[Passenger %05d]  Reacting to floor event\r\n\r\n", GetCurrentThreadId());
 					for (std::list<Elevator*>::iterator it = (passengerParameter->ElevatorList)->begin(); it != passengerParameter->ElevatorList->end(); ++it)

@@ -16,7 +16,7 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	// Initialize queue and map
 	const int ElevatorCount = 1;
-	const int PassengerCount = 2;
+	const int PassengerCount = 1;
 	const int FloorCount = 10;
 	HANDLE FloorEvents[FloorCount];
 

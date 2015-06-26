@@ -30,6 +30,8 @@ public:
 	static DWORD WINAPI ThreadWork(LPVOID parameter);
 
 	FloorRequest CurrentRequest;
+
+	// Passengers only enter an elevator when they announce themselves on a floor and are not CurrentlyMoving
 	bool CurrentlyMoving;
 	std::mutex PassengerListMutex;
 	std::list<Passenger*> PassengerList;
@@ -42,5 +44,6 @@ public:
 
 	virtual int SetFloor(const int floor, bool absolute = false);
 
-	void TakeNextRequest();
+	// Returns true, when the elevator successfully took a new request
+	bool TakeNextRequest();
 };

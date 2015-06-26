@@ -32,7 +32,6 @@ public:
 
 	// instance data
 	Elevator* InElevator;
-	FloorRequest* currentRequest;
 
 	int TargetFloor = 0;
 
