@@ -1,4 +1,5 @@
-#include "stdafx.h"
+#include "../Public/stdafx.h"
+#include "isExport.h"
 #include "SpinLock.h"
 
 SpinLock::SpinLock()

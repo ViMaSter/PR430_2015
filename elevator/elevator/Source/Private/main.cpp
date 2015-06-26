@@ -1,12 +1,14 @@
 // elevator.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
+#include "../Public/stdafx.h"
 
 #include <map>
 #include <list>
 #include <queue>
 #include <mutex>
+
+#include <stdarg.h>
 
 #include "Elevator.h"
 #include "Passenger.h"
@@ -15,8 +17,8 @@
 int _tmain(int argc, _TCHAR* argv[])
 {
 	// Initialize queue and map
-	const int ElevatorCount = 1;
-	const int PassengerCount = 1;
+	const int ElevatorCount = 5;
+	const int PassengerCount = 5;
 	const int FloorCount = 10;
 	HANDLE FloorEvents[FloorCount];
 
@@ -26,7 +28,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 	std::mutex OpenRequestsMutex;
-	std::queue<FloorRequest> OpenRequests = std::queue<FloorRequest>();
+	std::queue<FloorRequest*> OpenRequests = std::queue<FloorRequest*>();
 
 	std::list<Elevator*> ElevatorList = std::list<Elevator*>();
 	std::list<Passenger*> PassengerList = std::list<Passenger*>();
@@ -63,4 +65,3 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	return 0;
 }
-

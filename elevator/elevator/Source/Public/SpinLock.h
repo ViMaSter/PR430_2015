@@ -1,8 +1,9 @@
 #pragma once
 
+#include "export.h"
 #include "Windows.h"
 
-class SpinLock
+class ELEVATOR_API SpinLock
 {
 public:
 	long IsLocked;
