@@ -13,8 +13,9 @@
 #pragma comment(lib, "winmm.lib")
 
 int _tmain(int argc, _TCHAR* argv[]) {
-	AudioPlayer ap = AudioPlayer("D:\\prj\\6_PR430\\elevator\\audio\\Files\\Forest.wav");
-	AudioPlayer ap2 = AudioPlayer("D:\\prj\\6_PR430\\elevator\\audio\\Files\\David Fenn - Titan Souls - 25 Epilogue.wav");
+	// Absolute paths, since relative paths are relative to the "working directory"
+	AudioPlayer ap = AudioPlayer("D:\prj\6_PR430\audio\Files\\File1.wav");
+	AudioPlayer ap2 = AudioPlayer("D:\prj\6_PR430\audio\Files\\File2.wav");
 
 	ap.Play();
 
