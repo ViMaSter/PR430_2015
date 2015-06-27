@@ -84,12 +84,17 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../Public/stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Source\Private\AudioPlayer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../Public/stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Source\Private\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../Public/stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Public\AudioPlayer.h" />
     <ClInclude Include="Source\Public\FileHandle.h" />
     <ClInclude Include="Source\Public\stdafx.h" />
     <ClInclude Include="Source\Public\targetver.h" />
