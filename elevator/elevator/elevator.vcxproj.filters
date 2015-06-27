@@ -68,9 +68,6 @@
     <ClInclude Include="Source\Public\targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="isExport.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Public\isExport.h">
       <Filter>Header Files</Filter>
     </ClInclude>

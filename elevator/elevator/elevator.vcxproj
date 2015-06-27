@@ -61,7 +61,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="isExport.h" />
     <ClInclude Include="Source\Public\ConsoleBufferHelper.h" />
     <ClInclude Include="Source\Public\ElevatableEntity.h" />
     <ClInclude Include="Source\Public\Elevator.h" />
