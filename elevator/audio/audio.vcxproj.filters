@@ -18,7 +18,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Private\multithreaddedAudio.cpp">
+    <ClCompile Include="Source\Private\audio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Private\stdafx.cpp">

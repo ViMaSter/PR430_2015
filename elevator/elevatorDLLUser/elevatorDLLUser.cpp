@@ -3,6 +3,8 @@
 
 #include "stdafx.h"
 
+#include <string>
+
 #include "Elevator.h"
 #include "Passenger.h"
 

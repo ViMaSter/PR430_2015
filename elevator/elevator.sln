@@ -7,7 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "elevator", "elevator\elevat
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "elevatorDLLUser", "elevatorDLLUser\elevatorDLLUser.vcxproj", "{495A6C74-35F7-4B64-920F-4E9237CEF3A8}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multithreaddedAudio", "multithreaddedAudio\multithreaddedAudio.vcxproj", "{F930590C-DB23-4280-BA7A-51D95BC4D2D2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audio", "audio\audio.vcxproj", "{F930590C-DB23-4280-BA7A-51D95BC4D2D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

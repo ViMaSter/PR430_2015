@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F930590C-DB23-4280-BA7A-51D95BC4D2D2}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>multithreaddedAudio</RootNamespace>
+    <RootNamespace>audio</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -80,7 +80,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Private\multithreaddedAudio.cpp">
+    <ClCompile Include="Source\Private\audio.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../Public/stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
