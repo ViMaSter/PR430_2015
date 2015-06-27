@@ -5,6 +5,8 @@
 #include "FileHandle.h"
 #include "WaveFormat.h"
 
+#include "isExport.h"
+
 #include "AudioPlayer.h"
 
 #pragma comment(lib, "winmm.lib")
@@ -24,7 +26,7 @@ void CALLBACK AudioPlayer::AudioCallback(HWAVEOUT hwo, UINT uMsg, DWORD_PTR dwIn
 }
 void AudioPlayer::PrepareFile() {
 	// Open file
-	fopen_s(&InternalFileHandle, Filename.c_str(), "rb");
+	fopen_s(&InternalFileHandle, Filename->c_str(), "rb");
 
 	// Get length
 	fseek(InternalFileHandle, 0, SEEK_END);
@@ -56,7 +58,7 @@ void AudioPlayer::PrepareFile() {
 			break;
 		default:
 			// Other Chunk
-			ChunkList.push_back(temporaryChunk);
+			ChunkList->push_back(temporaryChunk);
 			fseek(InternalFileHandle, temporaryChunk.Length, SEEK_CUR);
 			break;
 		}
@@ -70,6 +72,7 @@ bool AudioPlayer::OpenDevice() {
 }
 
 bool AudioPlayer::PrepareHeader(WAVEHDR* waveHeader) {
+	*waveHeader = { 0 };
 	waveHeader->dwBufferLength = 32 * 10024;
 	char* data = new char[waveHeader->dwBufferLength];
 	waveHeader->lpData = data;
@@ -106,7 +109,8 @@ bool AudioPlayer::Play() {
 }
 
 AudioPlayer::AudioPlayer(const char* filename) {
-	Filename = filename;
+	Filename = new std::string(filename);
+	ChunkList = new std::vector<WaveFormat::Chunk>();
 }
 
 AudioPlayer::~AudioPlayer() {
@@ -118,4 +122,7 @@ AudioPlayer::~AudioPlayer() {
 	printf("%s closed handle!\r\n", waveOutCloseResult == MMSYSERR_NOERROR ? "Successfully" : "Unsuccessfully");
 
 	fclose(InternalFileHandle);
+
+	delete Filename;
+	delete ChunkList;
 }

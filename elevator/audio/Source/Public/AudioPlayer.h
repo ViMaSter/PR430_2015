@@ -1,5 +1,7 @@
 #pragma once
 
+#include "export.h"
+
 #include "../Public/stdafx.h"
 
 #include <vector>
@@ -9,11 +11,11 @@
 
 #pragma comment(lib, "winmm.lib")
 
-class AudioPlayer {
+class AUDIO_API AudioPlayer {
 public:
 	static void CALLBACK AudioCallback(HWAVEOUT hwo, UINT uMsg, DWORD_PTR dwInstance, DWORD_PTR dwParam1, DWORD_PTR dwParam2);
 private:
-	std::string Filename;
+	std::string* Filename;
 	FILE* InternalFileHandle;
 	// Denotes the fseek-usable begin of the data-chunk of the file
 	int DataBegin = 0;
@@ -21,7 +23,7 @@ private:
 	WAVEFORMATEX WaveFormat;
 	WaveFormat::Header Header;
 
-	std::vector<WaveFormat::Chunk> ChunkList;
+	std::vector<WaveFormat::Chunk>* ChunkList;
 
 	HWAVEOUT WaveOutHandle;
 	WAVEHDR WaveHeader;

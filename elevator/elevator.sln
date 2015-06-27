@@ -6,8 +6,16 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "elevator", "elevator\elevator.vcxproj", "{7DE0BCF9-BA7D-4C9E-8FD8-E09F97BAA205}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "elevatorDLLUser", "elevatorDLLUser\elevatorDLLUser.vcxproj", "{495A6C74-35F7-4B64-920F-4E9237CEF3A8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7DE0BCF9-BA7D-4C9E-8FD8-E09F97BAA205} = {7DE0BCF9-BA7D-4C9E-8FD8-E09F97BAA205}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audio", "audio\audio.vcxproj", "{F930590C-DB23-4280-BA7A-51D95BC4D2D2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audioDLLUser", "audioDLLUser\audioDLLUser.vcxproj", "{D92E674B-5080-41F8-977A-9E00D28976E8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F930590C-DB23-4280-BA7A-51D95BC4D2D2} = {F930590C-DB23-4280-BA7A-51D95BC4D2D2}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +35,10 @@ Global
 		{F930590C-DB23-4280-BA7A-51D95BC4D2D2}.Debug|Win32.Build.0 = Debug|Win32
 		{F930590C-DB23-4280-BA7A-51D95BC4D2D2}.Release|Win32.ActiveCfg = Release|Win32
 		{F930590C-DB23-4280-BA7A-51D95BC4D2D2}.Release|Win32.Build.0 = Release|Win32
+		{D92E674B-5080-41F8-977A-9E00D28976E8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D92E674B-5080-41F8-977A-9E00D28976E8}.Debug|Win32.Build.0 = Debug|Win32
+		{D92E674B-5080-41F8-977A-9E00D28976E8}.Release|Win32.ActiveCfg = Release|Win32
+		{D92E674B-5080-41F8-977A-9E00D28976E8}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
