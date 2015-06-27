@@ -14,13 +14,11 @@
 void CALLBACK AudioPlayer::AudioCallback(HWAVEOUT hwo, UINT uMsg, DWORD_PTR dwInstance, DWORD_PTR dwParam1, DWORD_PTR dwParam2) {
 	switch (uMsg) {
 	case WOM_OPEN:
-		printf("a");
 		break;
 	case WOM_DONE:
 		((AudioPlayer*)dwInstance)->ExecuteSound((WAVEHDR*)dwParam1);
 		break;
 	case WOM_CLOSE:
-		printf("c");
 		break;
 	}
 }
